@@ -1,0 +1,114 @@
+<html>
+  <!-- tailwind -->
+  <head>
+    <link rel="stylesheet" href="lib/tailwind.min.css">
+    <title> Manage Mastodon boosts </title>
+<style>
+.invisible.invisible {
+  display: none;
+}
+.ellipsis.ellipsis::after {
+  content: "...";
+}
+</style>
+
+  
+
+
+
+  </head>
+
+  <body>
+    <div class="container max-w-screen-md mx-auto relative" id="app">
+      <h1 class="text-3xl text-center m-4"> Manage Mastodon boosts </h1>
+      <!-- logout button -->
+
+      <div v-if="mastodon && mastodon.loggedIn()">
+        <div class="absolute top-0 right-0 m-4">
+          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" @click="logout()">Logout</button>
+        </div>
+
+        <div class="text-center mb-12" v-if="ids.length != following_count"> Loaded {{ids.length}} of {{following_count}} people you follow </div>
+
+        <table>
+          <tr v-for="id in ids" :set="user = relationships[id]">
+
+            <td class="pr-4">
+              <img :src="user.avatar" class="w-8 h-8 rounded-full">
+            </td>
+            <td>
+              <a :href="mastodon.instanceURL + '/@' + user.acct" target="_blank">
+                {{user.display_name || user.username}}
+              </a>
+            </td>
+            <td>
+              <!-- if showing_blogs -->
+              <button class="p-2 bg-purple-800 text-white rounded-lg" v-if="user.showing_reblogs" @click="hideBoosts(id)">Hide boosts</button>
+              <button class="p-2 bg-red-800 text-white rounded-lg"   v-else @click="showBoosts(id)">Show boosts</button>
+            </td>
+            <td>
+              <!-- preview toots -->
+              <button class="p-2 hover:text-blue-800 hover:underline rounded-lg" @click="previewToots(id)">Preview</button>
+            </td>
+          </tr>
+        </table>
+
+        <div class="fixed top-0 left-0 right-0 bottom-0 bg-white opacity-90" v-if="toots" @click="toots = null"></div>
+        <div class="fixed top-16 pt-16 left-16 right-16 p-8 max-h-96 scroll-p-8 overflow-scroll bg-gray-100 rounded-lg z-10" v-if="toots">
+          <!-- blur background -->
+          <button class="absolute right-0 p-8 -top-4" @click="toots = null">X</button>
+          <div class="absolute left-0 top-0 p-4">
+            <img :src="relationships[current_account].avatar" class="w-8 h-8 rounded-full inline-block">
+            {{relationships[current_account].username}}
+            <button class="ml-16 p-2 bg-purple-800 text-white rounded-lg" v-if="relationships[current_account].showing_reblogs" @click="hideBoosts(relationships[current_account].id)">Hide boosts</button>
+            <button class="ml-16 p-2 bg-red-800 text-white rounded-lg"   v-else @click="showBoosts(relationships[current_account].id)">Show boosts</button>
+          </div>
+          <div v-if="toots.length == 0">
+            No toots to show.
+          </div>
+          <div v-for="toot in toots">
+            <div class="p-4 border-b border-t border-gray-200">
+              <div class="flex">
+                <img :src="toot.account.avatar" class="w-8 h-8 rounded-full">
+                <div class="ml-2">
+                  <div class="font-bold">{{toot.account.username}}</div>
+                  <div class="text-sm">{{toot.account.display_name}}</div>
+                </div>
+              </div>
+              <div class="mt-2">
+                <div v-html="toot.content"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-else>
+        <p class="my-8">
+        Hello! This is a tool to quickly turn boosts on/off for people you follow on Mastodon.
+        </p>
+
+        <h3 class="text-xl mb-4"> Login with Mastodon</h3>
+
+        <div class="my-2">
+          What's your Mastodon instance?
+        </div>
+
+        <form class="flex flex-col" @submit.prevent="login">
+          <input class="border-2 border-gray-300 p-2 rounded-lg" type="text" v-model="server" :placeholder="random_placeholder()">
+          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2" type="submit">Login</button>
+        </form>
+        <div class="mt-32">
+          Made by <a class="underline text-green-800" href="https://jvns.ca" target="_blank">Julia Evans</a> (<a class="underline text-green-800" href="https://mastodon.social/@b0rk" target="_blank">@b0rk</a>). Source on <a class="underline text-green-800" href="https://github.com/jvns/manage-boosts">GitHub</a>.
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+  <!-- vue 3 -->
+  <script src="lib/vue.global.prod.js"></script>
+  <script src="mastodon.js"></script>
+  <script src="script.js"></script>
+</html>
+

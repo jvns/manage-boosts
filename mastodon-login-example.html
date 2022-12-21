@@ -1,0 +1,25 @@
+<html>
+  <!-- tailwind -->
+  <head>
+    <script src="mastodon.js"></script>
+    <script>
+      async function run() {
+          const mastodon = await Mastodon.initialize({
+             app_name: 'manage-boosts',
+             app_url: 'https://turn-off-boosts.jvns.ca',
+             scopes: 'read write',
+          });
+
+          if (!mastodon.loggedIn()) {
+              mastodon.login("https://mastodon.social");
+          }
+      }
+      run();
+    </script>
+
+
+  </head>
+
+  <body>
+  </body>
+</html
