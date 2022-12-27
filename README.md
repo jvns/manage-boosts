@@ -12,8 +12,9 @@ I've tested it with mastodon.social, it may or may not work with other Mastodon 
 ### this code is unmaintained
 
 I made this library just for me to use, it's fulfilled its purpose for me, and
-I'm not planning to take feature requests or fix bugs. You can make PRs /
-issues if you want but I'll probably ignore them :)
+I'm not planning to take feature requests or fix bugs. I would genuinely love
+to hear about problems (and I might even fix them! who knows!) but I want to be
+clear that there's a high probability that I will not respond :)
 
 It's MIT licensed so you can use it however you want.
 
