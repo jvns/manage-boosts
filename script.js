@@ -21,7 +21,7 @@ var app = Vue.createApp({
         this.mastodon = await Mastodon.initialize({
             app_name: 'manage-boosts',
             app_url: 'https://turn-off-boosts.jvns.ca',
-            scopes: 'read follow',
+            scopes: 'read:accounts read:statuses read:follows write:follows',
         });
         if (!this.mastodon.loggedIn()) {
             return;
