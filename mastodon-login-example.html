@@ -1,16 +1,23 @@
 <html>
-  <!-- tailwind -->
   <head>
     <script src="mastodon.js"></script>
     <script>
+      var mastodon; 
       async function run() {
-          const mastodon = await Mastodon.initialize({
+          mastodon = await Mastodon.initialize({
              app_name: 'manage-boosts',
              app_url: 'https://turn-off-boosts.jvns.ca',
-             scopes: 'read write',
+             scopes: 'read',
           });
 
-          if (!mastodon.loggedIn()) {
+          if (mastodon.loggedIn()) {
+              const response = await mastodon.get('/api/v1/accounts/verify_credentials');
+              const account = await response.json();
+              document.querySelector('body').innerHTML = `
+                <p>Logged in as ${account.username}</p>
+                <button id="logout" onclick="mastodon.logout()">Log out</button>
+              `;
+          } else {
               mastodon.login("https://mastodon.social");
           }
       }
